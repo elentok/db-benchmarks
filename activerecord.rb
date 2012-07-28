@@ -43,17 +43,16 @@ class Item < ActiveRecord::Base
 end
 
 def benchmark
-  Benchmark.bm do |x|
-    [10, 100, 1000].each do |lists_count|
-      [0, 1, 10, 100].each do |items_per_list|
-        title = "#{lists_count} lists, #{items_per_list} items per list"
+  puts "lists, items per list, notes, realtime"
+  [10, 100, 1000].each do |lists_count|
+    [0, 1, 10, 100].each do |items_per_list|
+      init_database
+      time = Benchmark.realtime { create_many_objects_with_bang(lists_count, items_per_list) }
+      puts "#{lists_count}, #{items_per_list}, create!, #{time}"
 
-        init_database
-        x.report("#{title} (!):") { create_many_objects_with_bang(lists_count, items_per_list) }
-
-        init_database
-        x.report("#{title}:    ") { create_many_objects_without_bang(lists_count, items_per_list) }
-      end
+      init_database
+      time = Benchmark.realtime { create_many_objects_without_bang(lists_count, items_per_list) }
+      puts "#{lists_count}, #{items_per_list}, create, #{time}"
     end
   end
 end
