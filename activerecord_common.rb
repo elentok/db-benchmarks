@@ -9,6 +9,7 @@ def init_database
   ActiveRecord::Base.establish_connection(
     adapter: 'sqlite3',
     database: 'tmp/db.sqlite3')
+    #database: ':memory:')
 
   MyMigration.new.up
 end
